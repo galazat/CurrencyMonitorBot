@@ -33,17 +33,6 @@ func main() {
 	commader := commands.NewCommander(bot, productService)
 
 	for update := range updates {
-		if update.Message != nil { // If we got a message
-
-			switch update.Message.Command() {
-			case "help":
-				commader.Help(update.Message)
-			case "list":
-				commader.List(update.Message)
-			default:
-				commader.Default(update.Message)
-			}
-
-		}
+		commader.HandleUpdate(update)
 	}
 }
