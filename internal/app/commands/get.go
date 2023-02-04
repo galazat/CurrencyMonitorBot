@@ -1,30 +1,29 @@
 package commands
 
 import (
+	"fmt"
 	"log"
-	"strconv"
 
+	"github.com/galazat/go-telegram-bot/internal/service/currency"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
 func (c *Commander) Get(inputMessage *tgbotapi.Message) {
 	args := inputMessage.CommandArguments()
+	outputMsgText := "-"
 
-	idx, err := strconv.Atoi(args)
-	if err != nil {
-		log.Println("wrong arg", idx)
+	log.Println("TESTING\n\n\n\n\n")
+	curr := currency.TodayCurrensies.Get(string(args))
+	if curr != nil {
+		outputMsgText = "sorry, can't find currency \xF0\x9F\x98\xA5"
 		return
-	}
-
-	product, err := c.productService.Get(idx)
-	if err != nil {
-		log.Printf("fail to get product with idx %: %v", idx, err)
-		return
+	} else {
+		outputMsgText = fmt.Sprintf("\n    %d %s  -  %s RUB ", curr.Nominal, curr.CharCode, curr.Value)
 	}
 
 	msg := tgbotapi.NewMessage(
 		inputMessage.Chat.ID,
-		product.Title,
+		outputMsgText,
 	)
 
 	c.bot.Send(msg)

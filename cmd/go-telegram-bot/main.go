@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/galazat/go-telegram-bot/internal/app/commands"
+	"github.com/galazat/go-telegram-bot/internal/service/currency"
 	"github.com/galazat/go-telegram-bot/internal/service/product"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/joho/godotenv"
@@ -31,6 +32,11 @@ func main() {
 	productService := product.NewService()
 
 	commader := commands.NewCommander(bot, productService)
+
+	err = currency.UpdateCurrencyData(0, 1, 0)
+	if err != nil {
+		log.Println(err)
+	}
 
 	for update := range updates {
 		commader.HandleUpdate(update)
